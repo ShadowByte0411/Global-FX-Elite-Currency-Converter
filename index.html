@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global FX | Elite Currency Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #020617;
+            color: #f8fafc;
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .news-container::-webkit-scrollbar { width: 4px; }
+        .news-container::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none; margin: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-hidden">
+
+    <div class="fixed top-0 left-0 w-full h-full -z-10">
+        <div class="absolute top-0 right-0 w-[50%] h-[50%] bg-blue-600/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 left-0 w-[50%] h-[50%] bg-indigo-600/5 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row h-screen">
+        
+        <aside class="w-full lg:w-80 glass-panel border-r border-white/5 p-6 flex flex-col h-full">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="p-2 bg-blue-600 rounded-lg">
+                    <i data-lucide="trending-up" class="text-white w-5 h-5"></i>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tighter uppercase">Global<span class="text-blue-500">FX</span></h1>
+            </div>
+
+            <div class="mb-10 p-5 bg-slate-900/40 rounded-3xl border border-white/5">
+                <div id="full-date" class="text-[10px] text-blue-400 font-bold mb-1 uppercase tracking-widest">---</div>
+                <div id="live-clock" class="text-3xl font-black text-white tracking-tighter">00:00:00</div>
+            </div>
+
+            <div class="flex-1 flex flex-col min-h-0">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                    Live Market Feed
+                </h3>
+                <div id="news-wire" class="news-container overflow-y-auto space-y-3 pr-2">
+                    </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 lg:p-12 overflow-y-auto flex flex-col justify-center">
+            
+            <header class="max-w-3xl mx-auto w-full mb-12 text-center lg:text-left">
+                <h2 class="text-4xl font-extrabold tracking-tight mb-2">Market <span class="text-blue-500">Converter</span></h2>
+                <p class="text-slate-400 text-sm">Real-time benchmark pairings for global currencies.</p>
+            </header>
+
+            <section class="max-w-3xl mx-auto w-full glass-panel p-8 lg:p-12 rounded-[3rem] shadow-2xl relative">
+                <div class="grid grid-cols-1 gap-6 relative">
+                    
+                    <div class="bg-slate-900/60 p-6 lg:p-8 rounded-[2rem] border border-white/5 focus-within:border-blue-500/40 transition-all">
+                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 block">Base Amount</label>
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                            <input type="number" id="fromAmount" value="1000" class="w-full bg-transparent text-5xl font-black outline-none text-white tracking-tighter">
+                            <select id="fromCountry" class="w-full md:w-64 bg-slate-800 text-sm font-bold p-4 rounded-xl outline-none border border-white/10 cursor-pointer"></select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center -my-10 z-10">
+                        <button id="swapBtn" class="bg-white text-slate-900 p-3 rounded-full shadow-xl hover:scale-110 active:rotate-180 transition-all">
+                            <i data-lucide="arrow-down-up" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <div class="bg-blue-600/5 p-6 lg:p-8 rounded-[2rem] border border-blue-500/10 focus-within:border-blue-500/40 transition-all">
+                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 block">Converted Value</label>
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                            <input type="text" id="toAmount" readonly class="w-full bg-transparent text-5xl font-black outline-none text-blue-400 tracking-tighter">
+                            <select id="toCountry" class="w-full md:w-64 bg-slate-800 text-sm font-bold p-4 rounded-xl outline-none border border-white/10 cursor-pointer"></select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center">
+                    <div class="bg-blue-500/10 px-6 py-3 rounded-xl border border-blue-500/20">
+                        <p class="text-[9px] text-blue-400 font-black uppercase tracking-widest mb-1">Exchange Rate</p>
+                        <h3 id="summaryText" class="text-xl font-bold text-slate-200">1 USD = 309.45 LKR</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500 font-medium mt-4 md:mt-0 uppercase tracking-widest">
+                        Updated: Jan 2026
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const currencyData = [
+            { country: "United States", code: "USD", rate: 1.0 },
+            { country: "European Union", code: "EUR", rate: 0.92 },
+            { country: "United Kingdom", code: "GBP", rate: 0.79 },
+            { country: "Sri Lanka", code: "LKR", rate: 309.45 },
+            { country: "India", code: "INR", rate: 83.32 },
+            { country: "Japan", code: "JPY", rate: 151.20 },
+            { country: "Australia", code: "AUD", rate: 1.52 },
+            { country: "Canada", code: "CAD", rate: 1.36 },
+            { country: "United Arab Emirates", code: "AED", rate: 3.67 },
+            { country: "Saudi Arabia", code: "SAR", rate: 3.75 },
+            { country: "China", code: "CNY", rate: 7.24 },
+            { country: "Singapore", code: "SGD", rate: 1.35 }
+        ];
+
+        const financialNews = [
+            { title: "USD stays strong against major pairings as trade data releases." },
+            { title: "LKR volatility remains low following regional banking updates." },
+            { title: "Eurozone inflation hits 2026 targets; ECB holds rates." },
+            { title: "Global markets show steady growth in tech and energy sectors." },
+            { title: "GBP/USD hits resistance at 1.28 level." }
+        ];
+
+        const fromInput = document.getElementById('fromAmount');
+        const toInput = document.getElementById('toAmount');
+        const fromSelect = document.getElementById('fromCountry');
+        const toSelect = document.getElementById('toCountry');
+        const swapBtn = document.getElementById('swapBtn');
+        const summaryText = document.getElementById('summaryText');
+        const liveClock = document.getElementById('live-clock');
+        const fullDate = document.getElementById('full-date');
+        const newsWire = document.getElementById('news-wire');
+
+        function setup() {
+            currencyData.sort((a, b) => a.country.localeCompare(b.country)).forEach(item => {
+                const optFrom = new Option(`${item.country} (${item.code})`, item.code);
+                const optTo = new Option(`${item.country} (${item.code})`, item.code);
+                fromSelect.add(optFrom);
+                toSelect.add(optTo);
+            });
+
+            fromSelect.value = "USD";
+            toSelect.value = "LKR";
+
+            financialNews.forEach(news => {
+                const newsEl = document.createElement('div');
+                newsEl.className = 'glass-card p-4 rounded-2xl';
+                newsEl.innerHTML = `<p class="text-[11px] font-medium leading-relaxed text-slate-300">${news.title}</p>`;
+                newsWire.appendChild(newsEl);
+            });
+            
+            lucide.createIcons();
+            performConversion();
+            updateTime();
+        }
+
+        function updateTime() {
+            const now = new Date();
+            liveClock.innerText = now.toLocaleTimeString('en-GB', { hour12: false });
+            fullDate.innerText = now.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+            setTimeout(updateTime, 1000);
+        }
+
+        function performConversion() {
+            const amount = parseFloat(fromInput.value);
+            const fromData = currencyData.find(c => c.code === fromSelect.value);
+            const toData = currencyData.find(c => c.code === toSelect.value);
+
+            if (isNaN(amount) || amount <= 0) {
+                toInput.value = "0.00";
+                return;
+            }
+
+            const converted = (amount / fromData.rate) * toData.rate;
+            toInput.value = converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const unitRate = (1 / fromData.rate) * toData.rate;
+            summaryText.innerText = `1 ${fromData.code} = ${unitRate.toFixed(4)} ${toData.code}`;
+        }
+
+        fromInput.addEventListener('input', performConversion);
+        fromSelect.addEventListener('change', performConversion);
+        toSelect.addEventListener('change', performConversion);
+        swapBtn.addEventListener('click', () => {
+            const temp = fromSelect.value;
+            fromSelect.value = toSelect.value;
+            toSelect.value = temp;
+            performConversion();
+        });
+
+        window.onload = setup;
+    </script>
+</body>
+</html>
