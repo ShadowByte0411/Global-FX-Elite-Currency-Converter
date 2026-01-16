@@ -8,7 +8,5 @@ A high-end, professional currency conversion dashboard designed with a 2026 glas
 * **Optimized Logic:** Instant conversion calculations performed locally for sub-millisecond precision.
 
 ## Tech Stack
-* **Styling:** Tailwind CSS (Modern Utility-First Framework)
-* **Icons:** Lucide-React (Vector-based Financial Icons)
-* **Typography:** Plus Jakarta Sans (Premium Fintech Font)
-* **Logic:** Vanilla JavaScript (ES6+)
+* **Styling:** Tailwind CSS 
+* **Logic:** JavaScript
